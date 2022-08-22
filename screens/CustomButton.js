@@ -21,6 +21,8 @@ export  const CustomButton = (props) => {
             color: (props.type=='outline')?props.color:"white",
             fontWeight: "700",
             fontSize: 20,
+            textAlign:'center',
+            
           },
     });
     
