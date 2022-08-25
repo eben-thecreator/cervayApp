@@ -3,35 +3,66 @@ import React, { useState } from "react";
 import { colors } from "../colors";
 import CustomButton from "./CustomButton";
 import InputBar from "../components/InputBar";
+import { addData, getData } from "./dbfunctions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+// import {} from  ''
 // import fs from "fs/promises"
 
 const HomeScreen = () => {
   const [station, setStation] = useState("");
-  const [traverseCount, setTraverseCount] = useState(0);
+  let [traverseCount, setTraverseCount] = useState(1);
+  let [pageNumber, setPageNumber] = useState(1);
+  const [traverseData, setTraverseData] = useState([]);
   const [description_1, setDescription_1] = useState("");
   const [description_2, setDescription_2] = useState("");
-  const [description_3, setDescription_3] = useState("");
-  const [description_4, setDescription_4] = useState("");
+  const [bearingLL1, setBearingLL1] = useState("");
+  const [bearingLL2, setBearingLL2] = useState("");
+  const [bearingRR1, setBearingRR1] = useState("");
+  const [bearingRR2, setBearingRR2] = useState("");
 
-  function next(){
-    setTraverseCount(traverseCount+1)
-    alert(traverseCount)
-   const desc_list = {
-      id: traverseCount, 
-      desc_1: description_1,
-      desc_2: description_2,
-      desc_3: description_3,
-      desc_4: description_4,
-    }
-    // fs.appendFile('../data/traverse-data.json', desc_list)
+  const desc_list = {
+    id: traverseCount,
+    traverseStation: station,
+    desc_1: description_1,
+    desc_2: description_2,
+    desc_3: description_3,
+    desc_4: description_4,
+    bearrings: {
+      LL1: bearingLL1,
+      LL2: bearingLL2,
+      RR1: bearingRR1,
+      RR2: bearingRR2,
+    },
+  };
+
+  async function handleDone() {
+    setTraverseData((traverseData[traverseCount] = desc_list));
+    console.log(traverseData);
+    addData(traverseData);
   }
-  function back(){
-    alert("Pressed back")
+  function next() {
+    setTraverseCount(traverseCount + 1);
+    setTraverseData((traverseData[traverseCount] = desc_list));
+    // Clearing the fields after next is clicked
+    setStation("");
+    setDescription_1("");
+    setDescription_2("");
+
+    setBearingLL1("");
+    setBearingLL2("");
+    setBearingRR1("");
+    setBearingRR2("");
+  }
+  function back() {
+    alert("Pressed back");
   }
   return (
     <View style={styles.container}>
       <Text style={styles.head}>Traverse</Text>
       <Text style={styles.secondaryText}>Traverse</Text>
+      {/* <Text style={styles.secondaryText}>
+        {pageNumber} of {traverseCount}
+      </Text> */}
       <Text style={styles.label}>Instrument Station</Text>
       <InputBar
         style={styles.stationField}
@@ -44,60 +75,70 @@ const HomeScreen = () => {
       <View style={styles.row}>
         <InputBar
           style={styles.stationField}
-          placeholder="Description"
+          placeholder="Description 1"
           value={description_1}
           onChangeText={(text) => setDescription_1(text)}
         />
         <Text style={styles.desc}>LL </Text>
         <InputBar
           style={styles.stationField}
-          placeholder="Bearing"
+          placeholder="000 00 00"
           dataType="number"
+          value={bearingLL1}
+          onChangeText={(text) => setBearingLL1(text)} //set LL1
         />
       </View>
       {/* Row 2 - Foresite a*/}
       <View style={styles.row}>
         <InputBar
           style={styles.stationField}
-          placeholder="Description"
+          placeholder="Description 2"
           value={description_2}
           onChangeText={(text) => setDescription_2(text)}
         />
         <Text style={styles.desc}>LL </Text>
         <InputBar
           style={styles.stationField}
-          placeholder="Bearing"
+          placeholder="000 00 00"
           dataType="number"
+          value={bearingLL2}
+          onChangeText={(text) => setBearingLL2(text)} //SET LL2
         />
       </View>
       {/* Row 3 - foresite b */}
       <View style={styles.row}>
         <InputBar
           style={styles.stationField}
-          placeholder="Description"
-          value={description_3}
-          onChangeText={(text) => setDescription_3(text)}
+          placeholder="Description 2"
+          value={description_2}
+          editable={false}
+          // onChangeText={(text) => setDescription_3(text)}
         />
         <Text style={styles.desc}>RR </Text>
         <InputBar
           style={styles.stationField}
-          placeholder="Bearing"
+          placeholder="000 00 00"
           dataType="number"
+          value={bearingRR1}
+          onChangeText={(text) => setBearingRR1(text)} //SET RR1
         />
       </View>
       {/* Row 4  - backsite b*/}
       <View style={styles.row}>
         <InputBar
           style={styles.stationField}
-          placeholder="Description"
-          value={description_4}
+          placeholder="Description 1"
+          value={description_1}
+          editable={false}
           onChangeText={(text) => setDescription_4(text)}
         />
         <Text style={styles.desc}>RR </Text>
         <InputBar
           style={styles.stationField}
-          placeholder="Bearing"
+          placeholder="000 00 00"
           dataType="number"
+          value={bearingRR2}
+          onChangeText={(text) => setBearingRR2(text)} //SET RR2
         />
       </View>
       {/* ================================================================= */}
@@ -106,30 +147,31 @@ const HomeScreen = () => {
           color={colors.primaryColor}
           type="outline"
           text={"Back"}
-          width='90%'
+          width="90%"
           onclick={back}
-
-          />
+          disabled={pageNumber == 1 ? true : false}
+        />
         <CustomButton
           color={colors.primaryColor}
           type="outline"
           text={"Clear All"}
-          width='90%'
+          width="90%"
           onclick={() => {
             // alert("Confirm to clear all field inputs")
-            
-            
-            setDescription_1("")
-            setDescription_2("")
-            setDescription_3("")
-            setDescription_4("")
+
+            setDescription_1("");
+            setDescription_2("");
+            setBearingLL1("");
+            setBearingLL2("");
+            setBearingRR1("");
+            setBearingRR2("");
           }}
-          />
+        />
         <CustomButton
           color={colors.primaryColor}
           type="outline"
           text={"Next"}
-          width='90%'
+          width="90%"
           onclick={next}
         />
       </View>
@@ -137,15 +179,7 @@ const HomeScreen = () => {
         color={colors.primaryColor}
         text={"Done"}
         width={370}
-        onclick={() => {
-          alert([
-            station,
-            description_1,
-            description_2,
-            description_3,
-            description_4,
-          ]);
-        }}
+        onclick={handleDone}
       />
     </View>
   );
@@ -205,9 +239,9 @@ const styles = StyleSheet.create({
     alignContent: "space-around",
     alignItems: "center",
     paddingHorizontal: 10,
-    marginHorizontal:5,
+    marginHorizontal: 5,
     marginTop: 20,
-    justifyContent: 'space-around'
+    justifyContent: "space-around",
   },
   buttonContainer: {
     width: "60%",
