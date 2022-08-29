@@ -1,18 +1,19 @@
 import { Alert, StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import { colors } from "../colors";
-import CustomButton from "./CustomButton";
+import CustomButton from "../components/CustomButton";
 import InputBar from "../components/InputBar";
 import { addData, getData } from "./dbfunctions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import FileSystem from "expo-file-system";
 // import {} from  ''
 // import fs from "fs/promises"
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   const [station, setStation] = useState("");
   let [traverseCount, setTraverseCount] = useState(1);
   let [pageNumber, setPageNumber] = useState(1);
-  const [traverseData, setTraverseData] = useState([]);
+  const [traverseData, setTraverseData] = useState(Array());
   const [description_1, setDescription_1] = useState("");
   const [description_2, setDescription_2] = useState("");
   const [bearingLL1, setBearingLL1] = useState("");
@@ -25,9 +26,8 @@ const HomeScreen = () => {
     traverseStation: station,
     desc_1: description_1,
     desc_2: description_2,
-    desc_3: description_3,
-    desc_4: description_4,
-    bearrings: {
+
+    bearings: {
       LL1: bearingLL1,
       LL2: bearingLL2,
       RR1: bearingRR1,
@@ -35,31 +35,42 @@ const HomeScreen = () => {
     },
   };
 
-  async function handleDone() {
-    setTraverseData((traverseData[traverseCount] = desc_list));
-    console.log(traverseData);
-    addData(traverseData);
-  }
-  function next() {
-    setTraverseCount(traverseCount + 1);
-    setTraverseData((traverseData[traverseCount] = desc_list));
-    // Clearing the fields after next is clicked
-    setStation("");
+  function clearFields() {
     setDescription_1("");
     setDescription_2("");
-
     setBearingLL1("");
     setBearingLL2("");
     setBearingRR1("");
     setBearingRR2("");
   }
+
+  function handleDone() {
+    // setTraverseData(traverseData);
+    // console.log(traverseData);
+    // addData(traverseData);
+    // let output = AsyncStorage.getItem("traverse");
+    // console.log(JSON.parse(output));
+    console.log(FileSystem.documentDirectory);
+    navigation.navigate("TraverseAction");
+  }
+  function next() {
+    setTraverseCount(traverseCount + 1);
+    setPageNumber((pageNumber += 1));
+    alert(typeof traverseData);
+    // setTraverseData(traverseData.push(desc_list));
+    // AsyncStorage.setItem("traverse", JSON.stringify(traverseData));
+    // Clearing the fields after next is clicked
+    setStation("");
+    clearFields();
+  }
   function back() {
-    alert("Pressed back");
+    // alert("Pressed back");
+    setPageNumber((pageNumber -= 1));
   }
   return (
     <View style={styles.container}>
       <Text style={styles.head}>Traverse</Text>
-      <Text style={styles.secondaryText}>Traverse</Text>
+      <Text style={styles.secondaryText}>Traverse Sheet {pageNumber}</Text>
       {/* <Text style={styles.secondaryText}>
         {pageNumber} of {traverseCount}
       </Text> */}
@@ -77,6 +88,7 @@ const HomeScreen = () => {
           style={styles.stationField}
           placeholder="Description 1"
           value={description_1}
+          multiline={true}
           onChangeText={(text) => setDescription_1(text)}
         />
         <Text style={styles.desc}>LL </Text>
@@ -94,6 +106,7 @@ const HomeScreen = () => {
           style={styles.stationField}
           placeholder="Description 2"
           value={description_2}
+          multiline={true}
           onChangeText={(text) => setDescription_2(text)}
         />
         <Text style={styles.desc}>LL </Text>
@@ -111,6 +124,7 @@ const HomeScreen = () => {
           style={styles.stationField}
           placeholder="Description 2"
           value={description_2}
+          multiline={true}
           editable={false}
           // onChangeText={(text) => setDescription_3(text)}
         />
@@ -129,6 +143,7 @@ const HomeScreen = () => {
           style={styles.stationField}
           placeholder="Description 1"
           value={description_1}
+          multiline={true}
           editable={false}
           onChangeText={(text) => setDescription_4(text)}
         />
@@ -156,16 +171,7 @@ const HomeScreen = () => {
           type="outline"
           text={"Clear All"}
           width="90%"
-          onclick={() => {
-            // alert("Confirm to clear all field inputs")
-
-            setDescription_1("");
-            setDescription_2("");
-            setBearingLL1("");
-            setBearingLL2("");
-            setBearingRR1("");
-            setBearingRR2("");
-          }}
+          onclick={clearFields}
         />
         <CustomButton
           color={colors.primaryColor}

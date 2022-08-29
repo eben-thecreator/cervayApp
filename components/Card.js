@@ -13,95 +13,63 @@ import {
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
+import { colors } from "../colors";
 
 /**
  * Custom Call to Large Button
  */
-function LargeButton(props) {
+function Card(props) {
   return (
-    <TouchableOpacity
-      onPress={
-        // alert("Forms to create")
-        props.eventHandler
-      }
-      style={styles.card}
-    >
-      <View style={styles.left}>
-        {props.type == "m" ? (
-          <MaterialCommunityIcons
-            name={props.iconName}
-            size={70}
-            color="white"
-          />
-        ) : props.type == "f" ? (
-          <FontAwesome5 name={props.iconName} size={70} color="white" />
-        ) : (
-          <AntDesign name={props.iconName} size={70} color="white" />
-        )}
-      </View>
-      <View style={styles.right}>
-        <Text style={styles.label}>{props.primaryText}</Text>
-        <Text style={styles.helper}>{props.secondaryText}</Text>
+    <TouchableOpacity onPress={props.onPress}>
+      <View style={styles.infoTab}>
+        <Text style={styles.inputLabel}>{props.text}</Text>
+        <MaterialCommunityIcons
+          style={styles.icon}
+          name={props.icon}
+          size={35}
+          color={colors.primaryColor}
+        />
       </View>
     </TouchableOpacity>
   );
 }
 // ====================================================================
 
-export default LargeButton;
+export { Card };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "column",
-    marginTop: 10,
-    justifyContent: "center",
-  },
-  right: {
-    alignItems: "flex-end",
-    width: "70%",
-    backgroundColor: "#ffffff00",
-  },
-  left: {
-    alignItems: "flex-start",
-    width: "30%",
-    backgroundColor: "#ffffff00",
-  },
-
-  card: {
     flexDirection: "row",
-    height: 150,
-    backgroundColor: "#180829",
+    alignItems: "flex-start",
+    marginTop: 20,
+  },
+  icon: {
+    right: 30,
+  },
+  infoTab: {
+    flexDirection: "row",
+    height: 70,
+    width: "170%",
+    backgroundColor: "white",
+    borderColor: "#180829",
     elevation: 10,
-    width: "70%",
     marginHorizontal: 4,
-    marginBottom: 20,
+    marginBottom: 15,
     padding: 15,
     borderRadius: 10,
     shadowColor: "black",
-    shadowOpacity: 1,
-    alignSelf: "center",
+    shadowOpacity: 0.3,
     alignItems: "center",
-    alignContent: "center",
+    // justifyContent: "center",
   },
-  label: {
-    // fontWeight: '700',
-    fontFamily: "SSBold",
+
+  inputLabel: {
+    flex: 2 / 4,
+    // width: "60%",
+    textAlign: "left",
+    fontWeight: "bold",
     fontSize: 20,
-    marginTop: 5,
-    color: "white",
-    position: "relative",
-    alignContent: "flex-start",
-    alignSelf: "flex-start",
-    marginBottom: 20,
-    paddingLeft: 20,
-  },
-  helper: {
-    fontSize: 13,
-    color: "white",
-    alignContent: "flex-start",
-    alignSelf: "flex-start",
-    paddingLeft: 20,
-    // backgroundColor: `${Colors.colors.primary}`,
+    left: 30,
   },
 });
