@@ -1,75 +1,54 @@
-import {
-  AntDesign,
-  MaterialCommunityIcons,
-  FontAwesome5,
-} from "@expo/vector-icons";
-import React from "react";
-import {
-  Button,
-  Image,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  useColorScheme,
-} from "react-native";
-import { colors } from "../colors";
+import { StyleSheet, Text, View, TouchableOpacity, Animated } from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import { colors } from '../colors';
 
-/**
- * Custom Call to Large Button
- */
-function Card(props) {
+function Card({ text, icon, onPress }) {
   return (
-    <TouchableOpacity onPress={props.onPress}>
-      <View style={styles.infoTab}>
-        <Text style={styles.inputLabel}>{props.text}</Text>
-        <MaterialCommunityIcons
+    <TouchableOpacity 
+      onPress={onPress}
+      style={styles.container}
+      activeOpacity={0.7}
+    >
+      <View style={styles.card}>
+        <Text style={styles.text}>{text}</Text>
+        <Feather
           style={styles.icon}
-          name={props.icon}
-          size={35}
-          color={colors.primaryColor}
+          name={icon}
+          size={24}
+          color={colors.primary}
         />
       </View>
     </TouchableOpacity>
   );
 }
-// ====================================================================
-
-export { Card };
 
 const styles = StyleSheet.create({
   container: {
+    width: '100%',
+    marginBottom: 16,
+  },
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 20,
+    backgroundColor: colors.background,
+    borderRadius: 16,
+    shadowColor: colors.text.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  text: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "flex-start",
-    marginTop: 20,
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.text.primary,
   },
   icon: {
-    right: 30,
-  },
-  infoTab: {
-    flexDirection: "row",
-    height: 70,
-    width: "170%",
-    backgroundColor: "white",
-    borderColor: "#180829",
-    elevation: 10,
-    marginHorizontal: 4,
-    marginBottom: 15,
-    padding: 15,
-    borderRadius: 10,
-    shadowColor: "black",
-    shadowOpacity: 0.3,
-    alignItems: "center",
-    // justifyContent: "center",
-  },
-
-  inputLabel: {
-    flex: 2 / 4,
-    // width: "60%",
-    textAlign: "left",
-    fontWeight: "bold",
-    fontSize: 20,
-    left: 30,
-  },
+    marginLeft: 16,
+  }
 });
+
+export { Card };

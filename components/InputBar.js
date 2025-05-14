@@ -1,39 +1,60 @@
-import { StyleSheet, Text, View, TextInput } from "react-native";
-import React from "react";
+import { StyleSheet, View, TextInput } from 'react-native';
+import { colors } from '../colors';
 
-const GRAY = "#BFBDBD";
-const InputBar = (props) => {
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      // justifyContent: "center",
-      // alignItems: "center",
-    },
-    textfield: {
-      backgroundColor: GRAY,
-      color: "black",
-      fontSize: 20,
-      width: props.width ? props.width : 200,
-      height: 70,
-      borderRadius: 10,
-      padding: 10,
-    },
-  });
+const InputBar = ({ 
+  value, 
+  onChangeText, 
+  placeholder, 
+  width, 
+  editable = true,
+  multiline = false,
+  dataType = 'text'
+}) => {
   return (
     <View style={styles.container}>
       <TextInput
-        style={styles.textfield}
-        value={props.value}
-        onChangeText={props.onChangeText}
-        autoCorrect
-        caretHidden={false}
-        editable={props.editable}
-        placeholder={props.placeholder}
-        multiline={props.multiline}
-        keyboardType={props.dataType == "number" ? "decimal-pad" : "default"}
+        style={[
+          styles.input,
+          { width: width || '100%' },
+          multiline && styles.multiline,
+          !editable && styles.disabled
+        ]}
+        value={value}
+        onChangeText={onChangeText}
+        placeholder={placeholder}
+        placeholderTextColor={colors.text.secondary}
+        editable={editable}
+        multiline={multiline}
+        keyboardType={dataType === 'number' ? 'decimal-pad' : 'default'}
       />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginVertical: 8,
+  },
+  input: {
+    backgroundColor: colors.surface,
+    color: colors.text.primary,
+    fontSize: 16,
+    height: 56,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  multiline: {
+    height: 100,
+    paddingTop: 12,
+    paddingBottom: 12,
+    textAlignVertical: 'top',
+  },
+  disabled: {
+    backgroundColor: colors.surface,
+    color: colors.text.disabled,
+  }
+});
 
 export default InputBar;
